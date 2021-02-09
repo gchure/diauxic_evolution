@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from . import viz
+from . import io
 from . import fitderiv
 from . import gaussianprocess
 
