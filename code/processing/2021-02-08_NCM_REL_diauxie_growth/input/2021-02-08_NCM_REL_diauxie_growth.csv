@@ -160,3 +160,5 @@ clock_time,strain,media,od_600nm,acetate_mM,glucose_mM,date
 17:38,REL606,acetate,0.149,30,0,2021-02-08
 17:48,REL606,shift,0.191,30,0.61,2021-02-08
 17:48,REL606,acetate,0.159,30,0,2021-02-08
+17:58,REL606,shift,0.192,30,0.61,2021-02-08
+17:59,REL606,acetate,0.163,30,0,2021-02-08

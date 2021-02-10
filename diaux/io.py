@@ -12,7 +12,7 @@ def _load_colidict():
         __GENES__ = pickle.load(file)
 
 
-def standardize_genes(genes, name=True, COG=True, progress=True):
+def standardize_genes(genes, strain='MG1655', progress=True):
     """
     Given a list of genes, standardizee their names, assign their COG designation,
     and define their sector identity
@@ -21,27 +21,25 @@ def standardize_genes(genes, name=True, COG=True, progress=True):
     ----------
     genes: str, list, or 1d numpy.ndarray
         Name or array of names you wish to convert as strings. Case insensitive
-    name: bool
-        If True, the EcoCyc "common name" will be returned for the gene.
-    COG: bool
-        If True, the COG letter and class assignment will be returned for the gene.
-    progress: bool
-        If True, a status bar will print summarizing the status.
-    
+    strain: str, either 'MG1655' or 'REL606'
+        The strain of E. coli whose gene names you wish to annotate.    
+
     Returns
     -------
-    [names, [cog letters, cog class], sectors] : list of lists
+    [genes, [cog_class, cog_letter, cog_desc], sector]: list of lists
         A standardardized list of lists of the standardized names, 
-        cogs, and sectors in that order. Any category not requested (e.g. names=False),
-        an empty list will be returned in its place
-
+        cogs, and sectors in that order.
     """
+    global __GENES__
     if __GENES__ is None:
         _load_colidict()
 
-    # Determine the type of the supplied gene names 
-    # if (type(genes) != list) | (type(genes) != np.ndarray) | (type(genes) != str):
-        # raise TypeError(f'Provided argument is of type {type(genes)}! must be str, list, or np.ndarray')
+    # Determine if the desired string is correct.
+    try:
+        strain = __GENES__[strain.lower()]
+    except:
+        raise ValueError(f"Strain '{strain}' not in database. Must be either 'MG1655' or 'REL606'")
+
     if type(genes) == str:
         genes = [genes]
     
@@ -50,71 +48,33 @@ def standardize_genes(genes, name=True, COG=True, progress=True):
         iterator = tqdm.tqdm(genes, desc='Converting gene names...')
     else:
         iterator = genes
+
     # Do the standardization
-    std = [[], [[], []]]
-
-
+    std = [[], [[], [], []], []]
     for g in iterator:
         try:
-            sel = __GENES__[g.lower()]
-            if name:
-                std[0].append(sel['common_name'])
-            if  COG:
-                std[1][0].append(sel['cog_letter'])
-                std[1][1].append(sel['cog_class'])
-            # if sector:
-                # std[2].append()
+            sel = strain[g.lower()]
+            std[0].append(sel['common_name'])
+            std[1][0].append(sel['cog_letter'])
+            std[1][1].append(sel['cog_class'])
+            std[1][2].append(sel['cog_desc'])
+            std[2].append(sel['sector'])
+            
         except KeyError:
            warnings.warn(f'Provided gene {g} not present in master gene list.')
-    else: 
-        return std
+           std[0].append(g)
+           std[1][0].append('Not Found')
+           std[1][1].append('Not Found')
+           std[1][2].append('Not Found')
+           std[2].append('Not Found')
+    __GENES__ = None
+    return {'names':std[0], 
+            'cog_letters':std[1][0],
+            'cog_classes':std[1][1],
+            'cog_descs':std[1][2],
+            'sectors':std[2]}
         
-def assign_COG_classification(genes, progress=True):
-    """
-    Given a gene name (or list of names) return the assigned COG category.
-
-    Parameters
-    ----------
-    genes: str, list, or 1d numpy.ndarray
-        Gene name or array of gene names you wish to assign cog classes. 
-        Case insensitive
-    progress: bool
-        If True, a status bar will print summarizing the status.
-    
-    Returns
-    -------
-    genes_std: str, list
-       Standardized list of gene names following the Ecocyc  
-
-    """
-    if __GENES__ is None:
-        _load_colidict()
-
-    # Determine the type of the supplied gene names 
-    if type(genes) == 'str':
-        genes = []
-    elif (type(genes) != list) | (type(genes) != np.ndarray):
-        raise TypeError(f'Provided argument is of type {type(genes)}! must be str, list, or np.ndarray')
-    
-    # Determine the iterator
-    if progress:
-        iterator = tqdm.tqdm(genes, desc='Converting gene names...')
-    else:
-        iterator = genes
-    # Do the standardization
-    std = []
-    for g in iterator:
-        try:
-            std.append(genes[g.lower()][''])
-        except KeyError:
-            raise UserWarning(f'Provided gene {g} not present in master gene list.')
-    # Return the correct thing 
-    if len(std)  == 1:
-        return std[0]
-    else: 
-        return std
-
-def numeric_formatter(values, digits=3, sci=False, unit=''):
+def numeric_formatter(values, digits=3, sci=True, unit=''):
     """
     Formats numbers to human-readable formats using single-letter abbreviations
     for orders of magntiude. 
@@ -125,7 +85,6 @@ def numeric_formatter(values, digits=3, sci=False, unit=''):
         Value which you wish for format in a readable manner
     digits : int
         Number of significant figures to report
-    
 
     Returns
     -------
