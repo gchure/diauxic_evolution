@@ -61,7 +61,7 @@ def standardize_genes(genes, strain='MG1655', progress=True):
             std[2].append(sel['sector'])
             
         except KeyError:
-           warnings.warn(f'Provided gene {g} not present in master gene list.')
+           print(f'Warning: provided gene {g} not present in master gene list.')
            std[0].append(g)
            std[1][0].append('Not Found')
            std[1][1].append('Not Found')

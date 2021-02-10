@@ -121,8 +121,8 @@ for i, g in tqdm.tqdm(enumerate(coli_gene_lut['name'].values),
         cog_desc = 'Not Assigned'
 
     coli_gene_lut.loc[coli_gene_lut['name'] == g, 'cog_letter'] = cog_letter
-    coli_gene_lut.loc[coli_gene_lut['name'] == g, 'cog_class'] = cog_letter
-    coli_gene_lut.loc[coli_gene_lut['name'] == g, 'cog_desc'] = cog_letter
+    coli_gene_lut.loc[coli_gene_lut['name'] == g, 'cog_class'] = cog_class
+    coli_gene_lut.loc[coli_gene_lut['name'] == g, 'cog_desc'] = cog_desc
 
 #%%
 # Group by the cases where there is more than 1 cog designation for each common name
