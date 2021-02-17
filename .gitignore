@@ -1,0 +1,8 @@
+*.swp
+*.DS_*store
+*.log
+*.bbl
+*.egg-info
+*checkpoints*
+*pycache*
+altair-data*.json

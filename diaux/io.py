@@ -1,6 +1,8 @@
 import numpy as np 
 import pkg_resources 
+import pandas as pd
 import warnings
+from io import StringIO
 import pickle
 import tqdm
 
@@ -10,7 +12,6 @@ def _load_colidict():
     f = pkg_resources.resource_filename('diaux', 'package_data/coli_gene_dict.pkl')
     with open(f, 'rb') as file:
         __GENES__ = pickle.load(file)
-
 
 def standardize_genes(genes, strain='MG1655', progress=True):
     """
@@ -121,3 +122,73 @@ def numeric_formatter(values, digits=3, sci=True, unit=''):
             l = 'G'
         str_vals.append(f'{val} {l}{unit}')
     return str_vals 
+
+
+def parse_HPLC_output(file_path, peak_table=True, chromatogram=True):
+    """
+    Parses the textfile output of the Shimadzu HPLC. Note that this function 
+    assumes the desired detector output is "Detector B", that there is a "Compound"
+    entry, and that the LC Chromatogram is the last entry in the file.
+
+    TODO: Make this less hardcoded
+
+    Parameters
+    ----------
+    file_path: str
+        Path to the text file output
+    peak_table: bool
+        If True, the peak table will be identified and returned
+    chromatogram: bool 
+        If True, the chromatogram will be identified and returned
+
+    Returns
+    -------
+    peak_table_df, chromatogram_df: pandas DataFrame  
+        Pandas DataFrames for the peak table and chromatogram. Returns follow 
+        the kwargs
+
+    Raises
+    ------
+    TypeError:
+        TypeError is returned if the file_path is not a string
+    RuntimeError:
+        RuntimeError is returned if neither `peak_table` nor `chromatogram` is True
+    """
+
+    # Ensure types are correct
+    if type(file_path) is not str:
+        raise TypeError(f'file_path must be a string. Provided argument is of type {type(file_path)}')
+    if (peak_table != True) & (chromatogram != True):
+        raise RuntimeError(f'No objects set to return. Both `peak_table` and `chromatogram` are False')
+
+    # Load the file and read the lines
+    with open(file_path, 'r') as f:
+        lines = f.read()
+
+    # Determine if the peak table should be isolated
+    out = []
+    if peak_table:
+        peaks = '\n'.join(lines.split('[Peak Table(Detector B)]')[1].split('[Compound Results')[0][1:].split('\n')[1:])
+        peak_table_df = pd.read_csv(StringIO(peaks))
+         
+        # Clean and properly annotate the peak table.
+        peak_table_df = peak_table_df[['Peak#', 'R.Time', 'I.Time', 'F.Time', 'Area', 'Height']]
+        peak_table_df.rename(columns={'Peak#':'peak_id', 'R.Time':'retention_time', 
+                       'I.Time':'initial_time', 'F.Time':'final_time',
+                       'Area':'peak_area', 'Height':'peak_height'}, inplace=True)
+        out.append(peak_table_df)
+    # Determine if the chromatogram should be isolated
+    if chromatogram:
+        # Isolate the chromatogram
+        chrom =  '\n'.join(lines.split('[LC Chromatogram(Detector B-Ch1)]')[1].split('Multiplier')[1].split('\n')[1:])
+        chromatogram_df = pd.read_csv(StringIO(chrom))
+        chromatogram_df.rename(columns={'R.Time (min)':'time_min', 
+                              'Intensity':'intensity_mV'},
+                                  inplace=True)
+        out.append(chromatogram_df)
+
+    # Determine the return 
+    if len(out) == 1:
+        return out[0] 
+    else:
+        return out
