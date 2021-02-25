@@ -124,7 +124,7 @@ def numeric_formatter(values, digits=3, sci=True, unit=''):
     return str_vals 
 
 
-def parse_HPLC_output(file_path, peak_table=True, chromatogram=True):
+def parse_HPLC_output(file_path, detector='B', peak_table=True, chromatogram=True):
     """
     Parses the textfile output of the Shimadzu HPLC. Note that this function 
     assumes the desired detector output is "Detector B", that there is a "Compound"
@@ -136,6 +136,9 @@ def parse_HPLC_output(file_path, peak_table=True, chromatogram=True):
     ----------
     file_path: str
         Path to the text file output
+    detector: str, "A" or "B"
+        Detector channel to parse. As written, it only returns one detector 
+        channel
     peak_table: bool
         If True, the peak table will be identified and returned
     chromatogram: bool 
@@ -180,7 +183,7 @@ def parse_HPLC_output(file_path, peak_table=True, chromatogram=True):
     # Determine if the chromatogram should be isolated
     if chromatogram:
         # Isolate the chromatogram
-        chrom =  '\n'.join(lines.split('[LC Chromatogram(Detector B-Ch1)]')[1].split('Multiplier')[1].split('\n')[1:])
+        chrom =  '\n'.join(lines.split(f'[LC Chromatogram(Detector {detector})]')[1].split('Multiplier')[1].split('\n')[1:])
         chromatogram_df = pd.read_csv(StringIO(chrom))
         chromatogram_df.rename(columns={'R.Time (min)':'time_min', 
                               'Intensity':'intensity_mV'},
