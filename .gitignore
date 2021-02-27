@@ -5,4 +5,6 @@
 *.egg-info
 *checkpoints*
 *pycache*
+*.hpp
+*gecko*
 altair-data*.json

@@ -164,6 +164,32 @@ cal_fit = alt.Chart(fit_df).mark_line(clip=True).encode(
 layer = (cal_fit + cal_points).resolve_scale(color='independent')
 layer
 save(layer, f'./output/{DATE}_calibration_curve.pdf')
+
+
+#%%
+# Add sequential information
+iter = 0
+for i, c in enumerate([30, 0]):
+    for j, r in enumerate([1, 2]):
+        for k, t in enumerate([1, 2, 3]):
+            turnover_chroms.loc[(turnover_chroms['acetate_mM']==c) & 
+                    (turnover_chroms['replicate']==r) & 
+                    (turnover_chroms['sample_id']==t), 'order'] = iter
+            iter += 1
+
+turnover_chroms['order'] -= 1
+baseline = pd.DataFrame([])
+for g, d in turnover_chroms.groupby(['order']):
+    avg = d[(d['time_min'] >=17) & (d['time_min'] <= 23)]['intensity_mV'].mean()
+    baseline = baseline.append({'temporal_order': g, 
+                                'avg_baseline':avg},
+                                ignore_index=True)
+
+baseline_plot = alt.Chart(baseline).mark_line(point=True, size=1).encode(
+                x=alt.X('temporal_order:O', title='timepoint'),
+                y=alt.Y('avg_baseline:Q', title='average baseline (17 - 23 min) [mV]')
+)
+save(baseline_plot, './output/2021-02-22_baseline_jitter.pdf')
 #%%
 # # Given the calibration curve, compute the measured concentrations in the samples
 # dfs = []

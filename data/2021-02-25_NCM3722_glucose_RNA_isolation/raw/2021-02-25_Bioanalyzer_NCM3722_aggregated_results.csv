@@ -1,0 +1,128 @@
+Data File Name,Prokaryote Total RNA Nano_2021-02-25_15-58-04.xad
+Data File Path,C:\Users\cremerlab\Desktop
+Date Created,"Thursday, February 25, 2021 3:58:03 PM"
+Date Last Modified,"Thursday, February 25, 2021 4:13:24 PM"
+Version Created,B.02.11.SI811
+Version Last Modified,B.02.11.SI811
+ 
+Assay Name,Prokaryote Total RNA Nano Series II
+Assay Path,C:\Program Files (x86)\Agilent\2100 bioanalyzer\2100 expert\assays\RNA
+Assay Title,Prokaryote Total RNA Nano
+Assay Version,2.5
+ 
+Number of Samples Run,4
+ 
+Sample Name,Sample 1
+ 
+Peak Table
+Time corrected area,Area,Aligned Migration Time [s],Peak Height,Peak Width
+29.8,6.9,22.50,18.5,1.2
+ 
+Fragment Table
+Name,Start Time [s],End Time [s],Area,% of total Area
+ 
+Overall Results:
+RNA Area:,3.583948,
+RNA Concentration:,2.420329,ng/µl
+rRNA Ratio [23s / 16s]:,0,
+RNA Integrity Number (RIN):,1   (B.02.11),
+Result Flagging Color:,16768991,
+Result Flagging Label:,RIN:1,
+ 
+Sample Name,NCM3722_RNA_pilot
+ 
+Peak Table
+Time corrected area,Area,Aligned Migration Time [s],Peak Height,Peak Width
+28.6,6.7,22.50,18.3,1.2
+164.1,45.0,26.51,112.4,3.3
+1.6,0.5,30.61,1.3,0.7
+5.6,1.8,31.92,2.3,1.4
+132.4,56.5,41.23,91.6,2.6
+2.3,1.1,44.08,1.6,0.8
+241.8,116.7,46.59,118.3,5.4
+6.7,3.5,50.75,3.0,2.2
+8.1,4.4,52.77,1.4,4.8
+ 
+Fragment Table
+Name,Start Time [s],End Time [s],Area,% of total Area
+16S,40.85,43.31,128.2,21.6
+23S,45.87,48.67,206.7,34.8
+ 
+Overall Results:
+RNA Area:,593.3782,
+RNA Concentration:,400.723,ng/µl
+rRNA Ratio [23s / 16s]:,1.61218,
+RNA Integrity Number (RIN):,10   (B.02.11, Anomaly Threshold(s) manually adapted),
+Result Flagging Color:,16768991,
+Result Flagging Label:,RIN:10,
+ 
+Sample Name,
+ 
+Peak Table
+Time corrected area,Area,Aligned Migration Time [s],Peak Height,Peak Width
+27.9,6.6,22.50,17.7,0.9
+ 
+Fragment Table
+Name,Start Time [s],End Time [s],Area,% of total Area
+16S,33.89,34.28,0.2,4.0
+ 
+Overall Results:
+RNA Area:,4.638283,
+RNA Concentration:,3.132347,ng/µl
+rRNA Ratio [23s / 16s]:,0,
+RNA Integrity Number (RIN):,2.2   (B.02.11),
+Result Flagging Color:,16768991,
+Result Flagging Label:,RIN: 2.20,
+ 
+Sample Name,d3_Glucose
+ 
+Peak Table
+Time corrected area,Area,Aligned Migration Time [s],Peak Height,Peak Width
+26.7,6.3,22.50,17.7,0.9
+"1,603.2",432.9,25.63,366.0,3.7
+1.6,0.7,41.63,1.2,1.1
+ 
+Fragment Table
+Name,Start Time [s],End Time [s],Area,% of total Area
+16S,41.25,42.39,1.3,0.1
+ 
+Overall Results:
+RNA Area:,1614.548,
+RNA Concentration:,1090.344,ng/µl
+rRNA Ratio [23s / 16s]:,0,
+RNA Integrity Number (RIN):,2.6   (B.02.11),
+Result Flagging Color:,16768991,
+Result Flagging Label:,RIN: 2.60,
+ 
+Sample Name,Ladder
+ 
+Peak Table
+Time corrected area,Area,Aligned Migration Time [s],Peak Height,Peak Width
+27.8,6.4,22.50,18.6,0.8
+1.1,0.3,23.23,1.1,0.5
+1.0,0.2,24.65,0.3,0.8
+29.0,8.5,28.81,19.6,2.1
+0.8,0.3,32.43,0.6,0.6
+39.4,13.3,32.97,27.4,1.8
+0.9,0.3,35.76,0.5,0.7
+1.6,0.6,37.42,0.7,1.1
+28.4,11.0,38.05,19.0,1.9
+0.8,0.4,40.89,0.8,0.5
+1.9,0.8,42.16,0.9,1.1
+31.7,14.2,43.97,13.4,2.6
+1.6,0.8,45.39,1.0,1.0
+1.3,0.6,46.86,0.8,0.9
+1.6,0.8,48.03,0.8,1.1
+1.5,0.8,49.16,1.0,0.9
+39.5,20.9,51.90,10.4,4.5
+0.7,0.4,54.24,0.9,0.5
+0.6,0.3,54.78,0.7,0.4
+36.6,22.0,58.74,6.0,7.2
+0.8,0.5,63.68,0.9,0.7
+0.6,0.4,64.47,0.7,0.7
+ 
+Overall Results:
+RNA Area:,222.1154,
+RNA Concentration:,150,ng/µl
+Result Flagging Color:,16759715,
+Result Flagging Label:,All Other Samples,
