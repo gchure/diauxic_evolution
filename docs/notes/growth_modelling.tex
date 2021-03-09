@@ -4,6 +4,7 @@
 \usepackage[bottom=1in, margin=0.75in]{geometry}
 \usepackage{mathpazo}
 \usepackage{setspace}
+\usepackage{graphicx}
 \usepackage[colorlinks=true, allcolors=blue]{hyperref}
 \usepackage{amsmath}
 \onehalfspacing
@@ -15,7 +16,8 @@
 \begin{document}
 \maketitle
 
-\section{Translation-Limited Growth}\label{sec:translation_limited_growth}
+\section{Theoretical Underpinnings}
+\subsection{Translation-Limited Growth}\label{sec:translation_limited_growth}
 We begin by considering balanced exponential growth on a single carbon source.
 For the time being, we will consider a growth regime where translation is
 limiting and we will assume that nutrients are in abundance.  
@@ -69,7 +71,6 @@ this term has dimensions of $[T]$ and defines the amount of time it takes for
 the synthesis of one ribosomes' worth of protein mass. Equation
 \eqref{growth_law_gamma} can be rearranged to describe the mass fraction
 $\phi_R$ as a function of the growth rate, 
-
 \begin{equation}
 \phi_R = \phi_R^{(inact.)} + \frac{\lambda}{\gamma}.
 \label{eq:growth_law_gamma_phir}
@@ -84,7 +85,7 @@ ribosomes. Therefore, we will make the definition of
 \end{equation}
 for notational clarity. 
 
-\section{Nutrient-Limited Growth}
+\subsection{Nutrient-Limited Growth}
 We now turn our attention to the fact that, in order for ribosomes to form 
 peptide bonds, nutrients must be metabolized to produce tRNAs charged with amino
 acids. Thus, the nutritional extent of the growth medium will dependent on 
@@ -196,7 +197,7 @@ as a function of growth rate,
 \phi_R = \phi_R^{(max)} - \frac{\lambda}{\nu}.
 \end{equation}
 
-\section{Condition-Dependent Regulation of $\gamma$ and $\nu$}
+\subsection{Condition-Dependent Regulation of $\gamma$ and $\nu$}
 Thus far, we have presented $\gamma$ and $\nu$ as constants. For a given growth
 condition (such as a single growth medium) this is approximately true. However,
 both of these parameters are the target of regulation given the availability of
@@ -220,7 +221,7 @@ approach $0$ as $\theta_a <<  \theta_0$.
 In a similar fashion, we can make the assumption that the nutritional capacity 
 of a given growth condition will be dependent on the concentration of the
 nutrients. In the condition when nutrients are plentiful, the yield of amino
-acids  per unit mass of matabolic protein should be maximal. This should be true
+acids per unit mass of metabolic protein should be maximal. This should be true
 of $\nu$ \textit{for a given nutrient source}, assuming that nutrient's
 concentration is the tunable parameter. Thus, the standing amino acid pool
 $\theta_a$ is less important in setting the value of $\nu$ than is the
@@ -232,6 +233,105 @@ of a Monod expression,
 \label{eq:nu_monod}
 \end{equation}
 where $K_M$ is the Monod constant for growth on the specific nutrient source. 
+
+As $\nu$ depends on the composition of the \textit{medium} (rather than the
+intercellular composition), we must now describe how the nutrient composition
+$c$ changes as the biomass of the culture increases. In virtually all realistic 
+situations, the nutrients in the growth medium need to pass through a complex 
+metabolic pathway to be "converted" into amino acids that are charged to tRNAs.
+Thus, to keep track of the nutrient concentration, we have to specify a yield
+parameter $\Omega$ that describes the mass of amino acids produced per unit mass
+of nutrient. The dynamics of the growth medium is then described by 
+\begin{equation}
+\frac{dc}{dt} = -\frac{\nu(c)\left(\phi_R^{(max)} - \phi_R\right)}{\Omega}.
+\label{eq:dc_dt}
+\end{equation}
+
+\section{A Dynamical Model for Diauxic Growth}
+\subsection{Growth on a Single Carbon Source}
+With the preceding sections, we now have a complete dynamical description for
+growth on a single nutrient source. To summarize, the system of equations is
+governed by the accumulation of biomass via 
+\begin{equation}
+    \frac{dM}{dt} = \gamma(\theta) \phi_R M.
+    \label{eq:mass_ode}
+\end{equation} 
+The dynamics of the pool of amino acids $\theta_a$ is defined by the action of 
+the metabolic sector of the proteome $\phi_P$ as 
+\begin{equation}
+\frac{d\theta_a}{dt} = \nu(c)\phi_P M - \frac{dM}{dt} = \nu(c)\left[\phi_R^{(max)} - \phi_R\right]M - \frac{dM}{dt}.
+\end{equation}
+These amino acids, as described in the last section, ultimately come from the
+nutrients of the medium, which are at some concentration $c$. The dynamics of
+this component is governed by 
+\begin{equation}
+    \frac{dc}{dt} = -\frac{\nu(c)\phi_P M}{\Omega} = -\frac{\nu(c)\left[\phi_R^{(max)} - \phi_R\right]M}{\Omega}.
+\end{equation}
+
+Finally, the translational and nutritional capacities of the system are governed
+by the size of the amino acid pool and the nutrient concentration of the growth
+medium, respectively. These dependencies are codified mathematically as 
+\begin{equation}
+   \gamma(\theta) = \gamma^{(max)}\left(1 + \frac{\theta_0}{\theta_a}\right)^{-1}\,\,;\,\, \nu(c) = \nu^{(max)}\left(1 + \frac{K_m}{c}\right)^{-1}.
+   \label{eq:capacity_redefs}
+\end{equation}
+
+This set of equations [Equation \eqref{eq:mass_ode} --
+\eqref{eq:capacity_redefs}] completely describe growth on a single nutrient
+source. Figure \ref{fig:single_nutrient} shows how the biomass, nutrient
+concentration, and amino acid pool size changes as a function of time using
+parameters that are characteristic of \textit{E. coli} growing on glucose. It is
+important to note that, for the parameters considered here, there exists an
+"optimal" ribosomal mass fraction $\phi_R$ where the rate of biomass growth is 
+maximized. This can be clearly seen in Figure \ref{fig:single_nutrient}(A) as 
+the darkest and lightest color show slower growth of biomass compared the 
+the light blue or teal curves which are between the two extremes.  
+
+\begin{figure}
+\centering{
+\includegraphics[width=\textwidth]{figures/single_nutrient_dynamics.pdf}
+\caption{\textbf{Dynamics of growth on a single nutrient source.} (A) Biomass of
+the system relative to the initial condition $M(t=0)$. (B) The fractional
+concentration of the nutrients in the growth medium relative to that of $c(t =
+0)$. (C) The relative mass fraction of amino acids $\theta_a$ relative to
+$\theta_a(t = 0)$. For all plots, parameters were chosen to be approximately
+similar to growth of \textit{E.  coli} on a glucose-based medium. Explicitly,
+the model parameters used here are $\phi_R^{(max)} = 0.4$, $\gamma^{(max)} =
+8.25\,\text{hr}^{-1}$, $\nu^{(max)} = 2.5\,\text{hr}^{-1}$, $\theta_0 = 0.002$,
+$c = 50\,\text{mM}$, $\Omega = 0.3$, and $K_M = 5\,\mu\text{M}$. The initial 
+conditions were arbitrarily set to be $M_0 = 0.001$ and $\theta_a =
+\frac{M_0}{10}$.}
+\label{fig:single_nutrient}
+}
+\end{figure}
+\subsection{Growth on Two Carbon Sources}
+Given a dynamical model of growth on a single nutrient source, it becomes
+relatively simple to include the presence of a second nutrient source whose 
+metabolism is not preferred. 
+
+Let us consider two nutrient sources $x$ and $y$. Nutrient $x$ is the
+"preferred" nutrient, meaning that its metabolism is prioritized over $y$.
+The As $x$ and $y$ are different substrates, they require different sets of
+metabolic proteins $M_x$ and $M_y$ and corresponding proteome mass fractions
+$\phi_x$ and $\phi_y$. Additionally, as the nutrients are different, so too
+are the nutritional capacities $\nu_x$ and $\nu_y$ which are determined given
+the concentrations $c_x$ and $c_y$ and Monod constants $K_{M,x}$ and
+$K_{M,y}$, respectively. The translational capacity, however, is shared
+between the two nutrient sources as it is dependent only on the amino acid
+pool $\theta_a$ resulting from the metabolism of $x$ or $y$.
+
+How do we define a "preferred" substrate? In order to regulate what is
+metabolized, we must think of how the expression of the metabolic proteins are
+regulated. We will begin by considering that the expression of the metabolic
+proteins responsible for consuming each the preferential nutrient $x$ will be 
+proportional to its concentration $c_x$. Mathematically, we can model the mass
+fraction $\phi_x$ to have Monod-like dependence on the concentration $c_x$,
+yielding 
+\begin{equation}
+\phi_x(c_x) = \frac{\phi_x^{(max)}}{1 + \frac{K_{M, x}}{c_x}}. 
+\label{eq:phix_monod}
+\end{equation}
+
 
 
 

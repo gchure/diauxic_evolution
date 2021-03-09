@@ -257,7 +257,6 @@ def altair_style(return_colors=True, return_palette=True, **kwargs):
                     'fontWeight': 700,
                     'fontSize': 14,
                     'fontColor': '#4b4b4b',
-                    # 'anchor': 'start',
                 }
                   }
                 }
