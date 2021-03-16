@@ -28,6 +28,7 @@ def single_nutrient_dynamics(params, time, gamma_max, nu_max, phi_R,
 
     # Define the system of equations
     dM_dt = phi_R * M * gamma
+    
     # dMp_dt = (phi_R_max - phi_R) * dM_dt
     dtheta_dt = nu * (phi_R_max - phi_R) * M - dM_dt 
     dc_dt = - nu * (phi_R_max - phi_R) * M / omega
@@ -65,7 +66,7 @@ for i, phi in enumerate(phi_R):
     _df['time'] = time
     _df['relative_dM_dt'] = _df['dM_dt'] / M
     _df['relative_dc_dt'] = _df['dc_dt'] / c
-    _df['relative_dtheta_dt'] = _df['dtheta_dt'] / theta_a
+    _df['relative_dtheta_dt'] = _df['dtheta_dt'] /_df['dM_dt']
     _df['phi_R'] = phi
     dfs.append(_df)
 
@@ -93,7 +94,7 @@ dtheta_dt = base.mark_line(size=2).encode(
 
 single_nutrient_plots = (dM_dt | dc_dt | dtheta_dt).configure_title(anchor='start', dx=-8)
 single_nutrient_plots
-save(single_nutrient_plots, '../../../docs/notes/figures/single_nutrient_dynamics.pdf')
+# save(single_nutrient_plots, '../../../docs/notes/figures/single_nutrient_dynamics.pdf')
 # %%
 
 # %%
