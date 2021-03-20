@@ -1,12 +1,12 @@
 #%%
 import numpy as np 
 import pandas as pd 
-import scipy.integrate 
 import diaux.model
 import diaux.viz
 import imp 
 imp.reload(diaux.model)
 import altair as alt
+from altair_saver import save
 colors, palette = diaux.viz.altair_style()
 alt.data_transformers.disable_max_rows()
 
@@ -23,14 +23,22 @@ omega = 0.37
 precursor_mass_ref = 2E-3
 Km = 5E-6
 
+def optimal_allocation(phi_X, nu, gamma, Kd, phi_O=0.5):
+    numer = (phi_O + phi_X - 1) * (2 * Kd * nu * gamma - nu**2  -nu * gamma + np.sqrt(Kd * nu * gamma) * (nu - gamma))
+    denom = 4 * Kd * nu * gamma - nu**2 - 2 * nu * gamma - gamma**2
+    return -numer / denom
+
 # Define allocation parameters
 phi_O = 0.5
-phi_R = np.array([0.25, 0.22, 0.21, 0.15, 0.1])
-phi_P = 1 - phi_O - phi_R
+phi_X = np.array([0.01, 0.02, 0.03, 0.04, 0.05, 0.06, 0.07])
+num_muts = len(phi_X)
+# Determine the optimal allocation o
+phi_R = optimal_allocation(phi_X, nu_max, gamma_max, precursor_mass_ref, phi_O)
+phi_P = 1 - phi_O - phi_X - phi_R
 
 # Set up initial conditions
 od_init = 0.04 / 5
-M = np.ones(5) * od_init * OD_CONV
+M = np.ones(num_muts) * od_init * OD_CONV
 Mr = phi_R * M 
 Mp = phi_P * M
 precursors = 4.5E-4 * M 
@@ -46,27 +54,33 @@ time = np.linspace(0, 3, 200)
 params = [M, Mr, Mp, precursors, nutrients]
 flat_params = [value for param in params for value in param]
 
-args = (gamma_max, nu_max, precursor_mass_ref,
-        Km, omega, phi_R, phi_P, 5)
+args = (gamma_max, 
+            nu_max, 
+            precursor_mass_ref,
+            Km, 
+            omega,
+            phi_R, 
+            phi_P, 
+            num_muts)
 
 #%%
-
 # Specify the nutrient resets
 nutrient_dict = {-1: nutrients}
 colnames_anchor = ['protein_mass', 'ribosome_mass', 'metabolic_mass', 'precursors']
-colnames = [f'{k}__{i}' for i in range(5) for k in colnames_anchor]
+colnames = [f'{k}__{i}' for i in range(num_muts) for k in colnames_anchor]
 colnames.append('nutrients')
 
 # Specify the dilution parameters
-dilutions = 10 
-factor = 10
-dilution_df = diaux.model.temporal_dilutions(time, diaux.model.single_nutrient_diverse_pop, 
+dilutions = 25 
+target_mass = 0.04 * OD_CONV
+dilution_df = diaux.model.dilution_cycle(time, diaux.model.single_nutrient, 
                                     flat_params, args, num_dilutions=dilutions, 
-                                    dilution_factor=factor,
+                                    target_mass=target_mass,
                                     nutrient_dict=nutrient_dict,
-                                    colnames=colnames)
-#%%
+                                    colnames=colnames,
+                                    num_muts=num_muts)
 
+#%%
 shared_dfs = pd.DataFrame(['time'])
 anchors = []
 for col in colnames:
@@ -75,9 +89,9 @@ for col in colnames:
                 name, mut = col.split('__')
                 if name not in anchors:
                         anchors.append(name)
-N_muts = 5 
+# N_muts = 5 
 _dfs = []
-for n in range(N_muts):
+for n in range(num_muts):
         _df = pd.DataFrame([])
         for i, name in enumerate(anchors):
                 _df['time'] = dilution_df['time']
@@ -86,6 +100,8 @@ for n in range(N_muts):
         _dfs.append(_df)
 
 unique  = pd.concat(_dfs)               
+for i, x in enumerate(phi_X):
+        unique.loc[unique['idx'] == i, 'phi_X'] = x
 
 
 #                 _dilution_df[name] = dilution_df[col] 
@@ -105,50 +121,18 @@ unique  = pd.concat(_dfs)
 
 
 #%%
-
 unique['od'] = unique['protein_mass'].values / OD_CONV
-alt.Chart(unique).mark_line().encode(
+base = alt.Chart(unique, width=800, height=300)
+muts = base.mark_line().encode(
                 x=alt.X('time:Q', title='time [hr]'),
                 y=alt.Y('od:Q', title='optical density'),
-                color=alt.Color('idx:N', title='mutant ID')
+                color=alt.Color('phi_X:O', title='φx',
+                                scale=alt.Scale(scheme='viridis')))
+total = base.mark_line(opacity=0.2, size=4, color='black').encode(
+                x=alt.X('time:Q', title='time [hr]'),
+                y=alt.Y('sum(od):Q', title='optical density')
 )
-#%%
-base = alt.Chart(unique).encode(
-        x=alt.X('time:Q', title='time [hr]'))
-od = base.mark_line().encode(
-               y=alt.Y('od:Q', title='approximate optical density [a.u.]'),
-               color=alt.Color('idx:N', title='mutant idx'))
-od
-# dilution_df['precursor_conc'] = dilution_df['precursors'].values / dilution_df['protein_mass']
-# dilution_df['nutrient_conc'] = dilution_df['nutrients'].values / (AVO * VOL)
-# base = alt.Chart(dilution_df).encode(
-#         x=alt.X('time:Q', title='time [hr]'))
-# od = base.mark_line().encode(y=alt.Y('od:Q', title='approximate optical density [a.u.]'))
-# theta = base.mark_line().encode(y=alt.Y('precursor_conc:Q', title='precursor mass fraction'))
-# nuts = base.mark_line().encode(y=alt.Y('nutrient_conc:Q', title='nutrient concentration [M]'))
-# od & theta & nuts
 
-
-#%%
-
-out = scipy.integrate.odeint(diaux.model.single_nutrient,
-                             params, time, args=args)
-
-#%%
-df = pd.DataFrame(out, columns=['biomass', 'ribosomal_mass', 'metabolic_mass', 
-                                'precursors', 'nutrients'])
-df['time'] = time
-df['od'] = df['biomass'] / OD_CONV
-df['precursor_mass_frac'] = df['precursors'].values / df['biomass']
-df['nutrient_concentration'] = df['nutrients'].values / (AVO * VOL)
-
-base = alt.Chart(df).encode(
-        x=alt.X('time:Q', title='time [hr]'))
-od = base.mark_line().encode(y=alt.Y('od:Q', title='approximate optical density [a.u.]'))
-theta = base.mark_line().encode(y=alt.Y('precursor_mass_frac:Q', title='precursor mass fraction'))
-nuts = base.mark_line().encode(y=alt.Y('nutrient_concentration:Q', title='nutrient_concentration'))
-od & theta & nuts
-
-# %%
+save(muts, './steady_state_periodic_dilution.pdf')
 
 # %%
