@@ -1,6 +1,8 @@
+MANIFEST.in
 README.md
 setup.py
 diaux.egg-info/PKG-INFO
 diaux.egg-info/SOURCES.txt
 diaux.egg-info/dependency_links.txt
+diaux.egg-info/not-zip-safe
 diaux.egg-info/top_level.txt
