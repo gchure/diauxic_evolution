@@ -7,7 +7,7 @@ setup(
     name="diaux",
     version=__version__,
     description="",
-    license="BSD",
+    license="MIT",
     classifiers=[
         "Development Status :: 1 - Alpha",
         "Intended Audience :: Developers",

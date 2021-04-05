@@ -12,7 +12,8 @@ DATA_PATH = '../../../data'
 # Load the raw data 
 data = pd.read_csv(f'{DATA_PATH}/2021-03-31_NCM3722_glucose_turnover/raw/2021-03-31_NCM3722_glucose_growth.csv')
 data_df, param_df, plot = cremerlab.growth.infer_growth_rate(data, viz=True,
-                                                             print_params=False,
+                                                             od_bounds=[0.1,0.41],
+                                                             print_params=True,
                                                              groupby=['replicate']) 
 
 fig, ax = plot
