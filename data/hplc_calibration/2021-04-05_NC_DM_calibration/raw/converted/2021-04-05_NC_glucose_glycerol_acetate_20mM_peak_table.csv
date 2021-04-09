@@ -1,0 +1,21 @@
+#
+# 2021-04-05_NC_glucose_glycerol_acetate_20mM
+# ------------------------------
+# Acquired: 4/5/2021 6:25:57 PM
+# Converted: 04/07/2021 12:04:49 PM
+# Vial: 3
+# Injection Volume: 20 uL
+# Sample ID: 003
+#
+# Detector B
+# ---------------------
+# Acquisition Interval: 500 ms
+# Intensity Units: mV
+# Intensity Multiplier: 0.001
+#
+peak_idx,retention_time,arrival_time,departure_time,area,height,detector
+1,10.999,10.6,11.967,1364538,80487,B
+2,14.347000000000001,12.633,15.083,3552808,80943,B
+3,15.66,15.083,18.458,1888391,76558,B
+4,22.057,21.333000000000002,23.342,551179,20082,B
+5,25.015,24.291999999999998,26.075,237629,8024,B

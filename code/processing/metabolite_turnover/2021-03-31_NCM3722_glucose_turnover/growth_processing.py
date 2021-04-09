@@ -25,7 +25,7 @@ for ext in ['pdf', 'png']:
 # Convert the 'sampled' boolean to time point
 dfs = []
 for g, d in data_df.groupby(['replicate']):
-        d['sample_idx'] = 0
+        d['time_idx'] = 0
         sample_idx = []
         iter = 0
         for s in d['sampled'].values:
@@ -34,7 +34,7 @@ for g, d in data_df.groupby(['replicate']):
                         sample_idx.append(iter)
                 else:
                         sample_idx.append(0)
-        d['sample_idx'] = sample_idx
+        d['time_idx'] = sample_idx
         dfs.append(d)
 data_df = pd.concat(dfs, sort=False)
 data_df.to_csv(f'{DATA_PATH}/2021-03-31_NCM3722_glucose_turnover/processed/2021-03-31_NCM3722_glucose_growth_data.csv')
