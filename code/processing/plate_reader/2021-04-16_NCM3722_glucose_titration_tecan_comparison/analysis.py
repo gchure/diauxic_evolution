@@ -124,3 +124,4 @@ yield_points = alt.Chart(yield_df).mark_point(size=80).encode(
 
 yield_points
 # %%
+ 
